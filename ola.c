@@ -3,6 +3,7 @@
 #include "fragmenta.h"
 #include <sys/errno.h>
 #include <wchar.h>
+#include <math.h>
 
 typedef struct datos{
 	float ir;
@@ -16,6 +17,55 @@ typedef struct datos{
 	float fe;
 	int tipo;
 }Datos;
+
+typedef struct tablaentropia{
+	double entr;
+	int pos;
+}Tablaentropia;
+
+Tablaentropia entropia(int tipo[], int longitud)
+{
+
+	Tablaentropia t[longitud];
+	int i = 0, postabla = 0;
+	int veces3 = 4;
+	/*while (i < longitud)
+	{
+		if (datos[i].tipo != datos[i+1].tipo)
+		{
+			//Calcular entropia.
+			//double entrizq = entropiaizquierda(tabla, i, longitud);
+			//double entrdech = entropiaderecha(tabla, i, longitud);
+			//t[postabla].entr =(i/longitud) entrizq + (longitud-i/longitud) entrdech;
+			//t[postabla].pos = i;
+		}
+		i++;
+	}	
+
+
+
+
+		}
+	}*/
+	return t;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void quicksort(Datos cadena[], int izq, int der)
 {
@@ -80,10 +130,12 @@ int main(void)
 		j++;
 	}
 	quicksort(datos, 0, j-1);
+	int tipo[j];
 	for (int i=0; i<j; i++)
 	{
-		printf(" %f\n", datos[i].ir);
+		tipo[i] = datos[i].tipo;
 	}
+	Tablaentropia t = entropia(tipo, j-1);
 	fclose(f);
 	return 0;
 }
