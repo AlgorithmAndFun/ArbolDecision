@@ -23,12 +23,12 @@ typedef struct tablaentropia{
 	int pos;
 }Tablaentropia;
 
-Tablaentropia entropia(int tipo[], int longitud)
+/*Tablaentropia entropia(int tipo[], int longitud)
 {
 
 	Tablaentropia t[longitud];
 	int i = 0, postabla = 0;
-	int veces3 = 4;
+	int veces3 = 4; */
 	/*while (i < longitud)
 	{
 		if (datos[i].tipo != datos[i+1].tipo)
@@ -47,8 +47,8 @@ Tablaentropia entropia(int tipo[], int longitud)
 
 		}
 	}*/
-	return t;
-}
+/*	return t;
+} */
 
 
 
@@ -67,17 +67,17 @@ Tablaentropia entropia(int tipo[], int longitud)
 
 
 
-void quicksort(Datos cadena[], int izq, int der)
+void quicksort(Datos cadena[], int izq, int der, float determinante[])
 {
   int i=izq;
   int d=der;
-  float centro=cadena[(i+d)/2].ir;
+  float centro=determinante[(i+d)/2];
   do {
-    while (cadena[i].ir<centro && i<der)
+    while (determinante[i]<centro && i<der)
     {
       i++;
     }
-    while (centro<cadena[d].ir && d>izq)
+    while (centro<determinante[d] && d>izq)
     {
       d--;
     }
@@ -86,17 +86,20 @@ void quicksort(Datos cadena[], int izq, int der)
       Datos aux=cadena[i];
       cadena[i]=cadena[d];
       cadena[d]=aux;
+      float auxi=determinante[i];
+      determinante[i] = determinante[d];
+      determinante[d] = auxi;
       i++;
       d--;
     }
   } while(i<=d);
   if (izq < d)
   {
-    quicksort(cadena, izq, d);
+    quicksort(cadena, izq, d, determinante);
   }
   if(der > i)
   {
-    quicksort(cadena, i, der);
+    quicksort(cadena, i, der, determinante);
   }
 }
 
@@ -129,13 +132,28 @@ int main(void)
 		datos[j].tipo = atoi(frasefragmentada[9]);
 		j++;
 	}
-	quicksort(datos, 0, j-1);
+	float ir[j];
+	for (int i=0; i<j; i++)
+	{
+		ir[i] = datos[i].ir;
+	}	
+	quicksort(datos, 0, j-1, ir);
+	float na[j];
+	for (int i=0; i<j; i++)
+	{
+		na[i] = datos[i].na;
+	}
+	quicksort(datos, 0, j-1, na);
+	for (int i=0; i<j; i++)
+	{
+		printf("%f\n", datos[i].na);
+	}
 	int tipo[j];
 	for (int i=0; i<j; i++)
 	{
 		tipo[i] = datos[i].tipo;
 	}
-	Tablaentropia t = entropia(tipo, j-1);
+	//Tablaentropia t = entropia(tipo, j-1);
 	fclose(f);
 	return 0;
 }
