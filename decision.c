@@ -1,5 +1,6 @@
 /*
  * AUTORES: Ane Zubillaga, Ian Recke, Ivan Sorbet, Alejandro Meza
+ *version del 30/11/2019
  */
 
 #include <stdio.h>
