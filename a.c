@@ -49,12 +49,11 @@ void start_arbol_decision(){
 	clear();
 }
 double entropialateral(int tipo[],int inicio, int final){
-    double tipos1,tipos2,tipos3,tipos4,tipos5,tipos6,tipos7;
+    double tipos1 = 0,tipos2 = 0,tipos3 = 0,tipos4 = 0,tipos5 = 0,tipos6 = 0,tipos7 = 0;
     double entropia = 0;
-    double total=final-inicio;
+    double total=(final-inicio+1);
     int i=inicio;
-    double array[7]
-    while(i<final){
+    while(i<=final){
         if(tipo[i]==1){
             tipos1++;
         }
@@ -76,29 +75,24 @@ double entropialateral(int tipo[],int inicio, int final){
         else if(tipo[i]==7){
             tipos7++;
         }
-        .
+        
         i++;
     }
-     array=[tipos1,tipos2, tipos3, tipos4, tipos5, tipos6, tipos7];
+    double tabla[7] = {tipos1, tipos2, tipos3, tipos4, tipos5, tipos6, tipos7};
      for (int h=0; h<7; h++)
      {
-         if (array[h] != 0)
-             entropia = entropia - (array[h]/total)*log2(array[h]/total);
+         if (tabla[h] != 0)
+             entropia = entropia - ((tabla[h]/total)*log2(tabla[h]/total));
+   //      printf("Dentro del for %f\n", entropia);
      }
      
-    //for
-    //if(tipo[i]==0
-    //entropia = entropia +(-(tipos1/total)*log2(tipos1/total))
-    
-   // entropia=-(tipos1/total)*log2(tipos1/total)-(tipos2/total)*log2(tipos2/total)-(tipos3/total)*log2(tipos3/total)-(tipos4/total)*log2(tipos4/total)-(tipos5/total)*log2(tipos5/total)-(tipos6/total)*log2(tipos6/total)-(tipos7/total)*log2(tipos7/total);
-    
     return entropia;
 }
 int entropia(int tipo[], int longitud)
 {
-	int menor=1000;
+	double menor=1000;
     int posmenor=0;
-    double entropia;
+    double entropia = 0;
 	int i = 0; 
 	while (i < longitud)
 	{
@@ -106,11 +100,8 @@ int entropia(int tipo[], int longitud)
 		{
 		
 			double entrizq = entropialateral(tipo, 0, i);
-			double entrdech = entropialateral(tipo, i, longitud);
-        
-            printf("Soy la izquierda: %f\n", entrizq);
-			entropia =(i/longitud)*entrizq + ((longitud-i)/longitud)*entrdech;
-           // printf("%f\n",entropia);
+			double entrdech = entropialateral(tipo, i+1, longitud);
+            entropia =(((double)((double)i/(double)longitud)*entrizq) + (((double)((double)longitud-(double)i)/(double)longitud)*entrdech));
 			if(entropia<menor){
                 posmenor=i;
                 menor=entropia;
@@ -118,7 +109,8 @@ int entropia(int tipo[], int longitud)
             
 		}
 		i++;
-	}	return posmenor;
+	}
+	return posmenor;
 
 }
      
@@ -129,9 +121,9 @@ int main(void)
 	FILE *f;
 	char dats[400];
     int r;
-	char inutil[100];
+	char aux[100];
 	f = fopen("problem_glass.csv", "r+");
-	fgets(inutil, 100, f); //lee los valores que no van a servir de la primera fila
+	fgets(aux, 100, f); //lee los valores que no van a servir de la primera fila
 	int j = 0;
 	Datos datos[300]; //vector de tipo datos-->cada elemento, contiene un valor de todos los campos
 	while (!feof(f)) //mientras no se acabe el fichero
@@ -152,19 +144,22 @@ int main(void)
 		datos[j].tipo = atoi(frasefragmentada[9]);
 		j++;
 	}
-	int tipo[j];
-	for (int i=0; i<j; i++)
-	{
-		tipo[i] = datos[i].tipo;
-	}
+
+	//int posicion2 = entropia(tipo,j-1);
+//     printf("posicion %d",posicion2);
 	float ir[j];
 	for (int i=0; i<j; i++)
 	{
 		ir[i] = datos[i].ir;
 	}	
 	quicksort(datos, 0, j-1, ir);
-    int posicion = entropia(&(datos)->tipo,j);
-    printf("posicion %d\n",posicion);
+    int tipo[j];
+	for (int i=0; i<j; i++)
+	{
+		tipo[i] = datos[i].tipo;
+	}
+    int posicion = entropia(tipo,j-1);
+     printf("posicion %d\n",posicion);
 	//ENTROPIA
 	/////////
 	float na[j];
@@ -173,8 +168,8 @@ int main(void)
 		na[i] = datos[i].na;
 	}
 	quicksort(datos, 0, j-1, na);
-    int posicion2 = entropia(&(datos)->tipo,j-1);
-    printf("posicion %d",posicion2);
+//     int posicion2 = entropia(&(datos)->tipo,j-1);
+//     printf("posicion %d",posicion2);
 	//ENTROPIA
 	/////
 	/*for (int i=0; i<j; i++)
