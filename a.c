@@ -50,9 +50,10 @@ void start_arbol_decision(){
 }
 double entropialateral(int tipo[],int inicio, int final){
     double tipos1,tipos2,tipos3,tipos4,tipos5,tipos6,tipos7;
-    double entropia;
+    double entropia = 0;
     double total=final-inicio;
     int i=inicio;
+    double array[7]
     while(i<final){
         if(tipo[i]==1){
             tipos1++;
@@ -75,11 +76,22 @@ double entropialateral(int tipo[],int inicio, int final){
         else if(tipo[i]==7){
             tipos7++;
         }
-        
-        
+        .
         i++;
     }
-    entropia=-(tipos1/total)*log2(tipos1/total)-(tipos2/total)*log2(tipos2/total)-(tipos3/total)*log2(tipos3/total)-(tipos4/total)*log2(tipos4/total)-(tipos5/total)*log2(tipos5/total)-(tipos6/total)*log2(tipos6/total)-(tipos7/total)*log2(tipos7/total);
+     array=[tipos1,tipos2, tipos3, tipos4, tipos5, tipos6, tipos7];
+     for (int h=0; h<7; h++)
+     {
+         if (array[h] != 0)
+             entropia = entropia - (array[h]/total)*log2(array[h]/total);
+     }
+     
+    //for
+    //if(tipo[i]==0
+    //entropia = entropia +(-(tipos1/total)*log2(tipos1/total))
+    
+   // entropia=-(tipos1/total)*log2(tipos1/total)-(tipos2/total)*log2(tipos2/total)-(tipos3/total)*log2(tipos3/total)-(tipos4/total)*log2(tipos4/total)-(tipos5/total)*log2(tipos5/total)-(tipos6/total)*log2(tipos6/total)-(tipos7/total)*log2(tipos7/total);
+    
     return entropia;
 }
 int entropia(int tipo[], int longitud)
