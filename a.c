@@ -117,7 +117,7 @@ int entropia(int tipo[], int longitud)
 
 int main(void)
 {
-	start_arbol_decision;
+	start_arbol_decision();
 	FILE *f;
 	char dats[400];
     int r;
