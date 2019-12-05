@@ -373,44 +373,53 @@ tipoArbol CreaArbol(Datos datos,int comienzo,int final){
         elemento=19;
 		menor = entrofe;
     }
+    int posicion;
     if(elemento==11){
         quicksort(datos, comienzo, final, ir);
         umbral = datos[posir].ir;
+        posicion = posir;
     }
     if(elemento==12){
         quicksort(datos, comienzo, final, na);
         umbral = datos[posna].na;
+        posicion = posna;
     }
     if(elemento==13){
         quicksort(datos, comienzo, final, mg);
         umbral = datos[posmg].mg;
+        posicion = posmg
     }
     if(elemento==14)
     {
         quicksort(datos, comienzo, final, al);
         umbral = datos[posal].al;
-        
+        posicion = posal;
     }
     if(elemento==15){
         quicksort(datos, comienzo, final, si);
         umbral = datos[possi].si;
+        posicion = possi;
         
     }
     if(elemento==16){
         quicksort(datos, comienzo, final, k);
         umbral = datos[posk].k;
+        posicion =posk;
     }
     if(elemento==17){
         quicksort(datos, comienzo, final, ca);
         umbral = datos[posca].ca;
+        posicion = posca;
     }
     if(elemento==18){
         quicksort(datos, comienzo, final, va);
         umbral = datos[posva].va;
+        posicion = posva;
     }
     if(elemento==19){
         quicksort(datos, comienzo, final, fe);
        umbral = datos[posfe].fe; 
+       posicion = posfe;
     }
     
     
@@ -426,8 +435,9 @@ tipoArbol CreaArbol(Datos datos,int comienzo,int final){
     else{
         tipoElementoArbol ti;
         ti.elemento=elemento;
-        tip.umbral=
+        tip.umbral=umbral;
         tip.entropia=menor;
+        arbol1 = construir(ti, CreaArbol(datos,comienzo,posicion-1),CreaArbol(datos,posicion+1,final));
     }
 	return arbol1;
 }
