@@ -10,6 +10,7 @@
 #include <wchar.h>
 #include <math.h>
 #include <unistd.h>
+#include "arbolBin.h"
 #define clear() printf("\n")
 
 
@@ -48,6 +49,7 @@ void start_arbol_decision(){
 	sleep(1);
 	clear();
 }
+
 double entropialateral(int tipo[],int inicio, int final){
     double tipos1 = 0,tipos2 = 0,tipos3 = 0,tipos4 = 0,tipos5 = 0,tipos6 = 0,tipos7 = 0;
     double entropia = 0;
@@ -146,155 +148,288 @@ int main(void)
 		datos[j].tipo = atoi(frasefragmentada[9]);
 		j++;
 	}
+	fclose(f);
+	return 0; 
+}
 
-	//int posicion2 = entropia(tipo,j-1);
-//     printf("posicion %d",posicion2);
-	float ir[j];
-	for (int i=0; i<j; i++)
+int casoBase(Datos datos, int comienzo, int final){
+    double probabilad = 0.8;
+    double total = final -comienzo +1; 
+    double tipos1 = 0,tipos2 = 0,tipos3 = 0,tipos4 = 0,tipos5 = 0,tipos6 = 0,tipos7 = 0;
+    for(int i = comienzo; i<final; i++){
+        if(tipo[i]==1){
+            tipos1++;
+        }
+        else if(tipo[i]==2){
+            tipos2++;
+        }
+        else if(tipo[i]==3){
+            tipos3++;
+        }
+        else if(tipo[i]==4){
+            tipos4++;
+        }
+        else if(tipo[i]==5){
+            tipos5++;
+        }
+        else if(tipo[i]==6){
+            tipos6++;
+        }
+        else if(tipo[i]==7){
+            tipos7++;
+        }
+    }
+    ///////////////////
+    if((tipos1/total)>0.8){
+        return 1;
+    }
+    else if((tipos2/total)>0.8){
+        return 2;
+    }
+    else if((tipos3/total)>0.8){
+        return 3;
+    }
+     else if((tipos4/total)>0.8){
+        return 4;
+    }
+     else if((tipos5/total)>0.8){
+        return 5;
+    }
+     else if((tipos6/total)>0.8){
+        return 6;
+    }
+     else if((tipos7/total)>0.8){
+        return 7;
+    }
+    else{
+        return -1;
+    }
+    ////////////////
+}
+
+
+tipoArbol CreaArbol(Datos datos,int comienzo,int final){
+    
+   
+	float ir[final];
+	for (int i=comienzo; i<final; i++)
 	{
 		ir[i] = datos[i].ir;
 	}	
-	quicksort(datos, 0, j-1, ir);
-    int tipo[j];
-	for (int i=0; i<j; i++)
+	quicksort(datos, comienzo, final-1, ir);
+    int tipo[final];
+	for (int i=comienzo; i<final; i++)
 	{
 		tipo[i] = datos[i].tipo;
 	}
-	int posir=0;
+	int posir=comienzo;
 	double entroir;
-    entropia(tipo,j-1, &posir, &entroir);
+    entropia(tipo,final-1, &posir, &entroir);
 	//ENTROPIA NA
 	/////////
-	float na[j];
-	for (int i=0; i<j; i++)
+	float na[final];
+	for (int i=comienzo; i<final; i++)
 	{
 		na[i] = datos[i].na;
 	}
-	quicksort(datos, 0, j-1, na);
-	for (int i=0; i<j; i++)
+	quicksort(datos, comienzo, final-1, na);
+	for (int i=comienzo; i<final; i++)
 	{
 		tipo[i] = datos[i].tipo;
 	}
-	int posna = 0;
+	int posna = comienzo;
 	double entrona;
-	entropia(tipo, j-1, &posna, &entrona);
+	entropia(tipo, final-1, &posna, &entrona);
 	//ENTROPIA
 	/////
-	float mg[j];
-	for(int i =0; i<j; i++){
-		mg[j]=datos[i].mg;
+	float mg[final];
+	for(int i = comienzo; i<final; i++){
+		mg[i]=datos[i].mg;
 	}
-	quicksort(datos,0, j-1, mg);
-	for (int i=0; i<j; i++)
+	quicksort(datos,comienzo, final-1, mg);
+	for (int i=comienzo; i<final; i++)
 	{
 		tipo[i] = datos[i].tipo;
 	}
-	int posmg = 0;
+	int posmg = comienzo;
 	double entromg;
 	entropia(tipo, &posmg, &entromg);
 	//ENTROPIA
 	/////////////////// 
-	float al[j];
-	for(int i =0; i<j; i++){
-		al[j] = datos[i].al;
+	float al[final];
+	for(int i =comienzo; i<final; i++){
+		al[i] = datos[i].al;
 	}
-	quicksort(datos,0, j-1, al);
-	for (int i=0; i<j; i++)
+	quicksort(datos,comienzo, final-1, al);
+	for (int i=comienzo; i<final; i++)
 	{
 		tipo[i] = datos[i].tipo;
 	}
 	int posal;
 	double entroal;
-	 entropia(tipo, j-1, &posal, &entroal);
+	 entropia(tipo, final-1, &posal, &entroal);
 	//ENTROPIA
 	///////////////////// 
-    float si[j];
-    for(int i=0; i<j; i++){
-		si[j]=datos[i].si;
+    float si[final];
+    for(int i=comienzo; i<final; i++){
+		si[i]=datos[i].si;
 	}
-	quicksort(datos,0, j-1, si);
-	for (int i=0; i<j; i++)
+	quicksort(datos,comienzo, final-1, si);
+	for (int i=comienzo; i<final; i++)
 	{
 		tipo[i] = datos[i].tipo;
 	}
 	int possi;
 	double entrosi;
-	entropia(tipo, j-1, &possi, &entrosi);
+	entropia(tipo, final-1, &possi, &entrosi);
 	//ENTROPIA
 	/////////////////////
-	float k[j];
-	for(int i=0; i<j; i++){
-		k[j] = datos[i].k;
+	float k[final];
+	for(int i=comienzo; i<final; i++){
+		k[i] = datos[i].k;
 	}
-	quicksort(datos,0, j-1, k);
-	for (int i=0; i<j; i++)
+	quicksort(datos,comienzo, final-1, k);
+	for (int i=comienzo; i<final; i++)
 	{
 		tipo[i] = datos[i].tipo;
 	}
 	int posk;
 	double entrok;
-	entropia(tipo, j-1, &posk, &entrok);
+	entropia(tipo, final-1, &posk, &entrok);
 	//ENTROPIA
-	float ca[j];
-	for(int i =0; i<j; i++){
-		ca[j] = datos[i].ca;
+	float ca[final];
+	for(int i =comienzo; i<final; i++){
+		ca[i] = datos[i].ca;
 	}
-	quicksort(datos,0, j-1, ca);
-	for (int i=0; i<j; i++)
+	quicksort(datos,comienzo, final-1, ca);
+	for (int i=comienzo; i<final; i++)
 	{
 		tipo[i] = datos[i].tipo;
 	}
 	int posca;
 	double entroca;
-	entropia(tipo, j-1, &posk, &entrok);
+	entropia(tipo, final-1, &posk, &entrok);
 	//ENTROPIA
-	float va[j];
-	for(int i=0; i<j; i++){
-		va[j]= datos[i].va;
+	float va[final];
+	for(int i=comienzo; i<final; i++){
+		va[i]= datos[i].va;
 	}
-	quicksort(datos,0, j-1, va);
-	for (int i=0; i<j; i++)
+	quicksort(datos,comienzo, final-1, va);
+	for (int i=comienzo; i<final; i++)
 	{
 		tipo[i] = datos[i].tipo;
 	}
 	int posva;
 	double entrova;
-	entropia(tipo, j-1, &posva, &entrova);
+	entropia(tipo, final-1, &posva, &entrova);
 	//ENTROPIA
-	float fe[j];
-	for(int i=0; i<j; i++){
-		fe[j] = datos[i].fe;
+	float fe[final];
+	for(int i=comienzo; i<final; i++){
+		fe[i] = datos[i].fe;
 	}
-	quicksort(datos,0, j-1, fe);
-	for (int i=0; i<j; i++)
+	quicksort(datos,comienzo, final-1, fe);
+	for (int i=comienzo; i<final; i++)
 	{
 		tipo[i] = datos[i].tipo;
 	}
 	int posfe;
 	double entrofe;
-	entropia(tipo, j-1, &posfe, &entrofe);
+	entropia(tipo, final-1, &posfe, &entrofe);
 	
 	double menor = 1000;
-	if (entroir < menor)
+	if (entroir < menor){
+        elemento=11;
 		menor = entroir;
-	if (entrona < menor)
+    }
+	if (entrona < menor){
+        elemento=12;
 		menor = entrona;
-	if (entromg < menor)
+    }
+	if (entromg < menor){
+        elemento=13;
 		menor = entromg;
-	if (entroal < menor)
+    }
+	if (entroal < menor){
+        elemento=14;
 		menor = entroal;
-	if (entrosi < menor)
+    }
+	if (entrosi < menor){
+        elemento=15;
 		menor = entrosi;
-	if (entrok < menor)
+    }
+	if (entrok < menor){
+        elemento=16
 		menor = entrok;
-	if (entroca < menor)
+    }
+	if (entroca < menor){
+        elemento=17;
 		menor = entroca;
-	if (entrova < menor)
+    }
+	if (entrova < menor){
+        elemento=18;
 		menor = entrova;
-	if (entrofe < menor)
+    }
+	if (entrofe < menor){
+        elemento=19;
 		menor = entrofe;
-	fclose(f);
-	return 0;
+    }
+    if(elemento==11){
+        quicksort(datos, comienzo, final, ir);
+        umbral = datos[posir].ir;
+    }
+    if(elemento==12){
+        quicksort(datos, comienzo, final, na);
+        umbral = datos[posna].na;
+    }
+    if(elemento==13){
+        quicksort(datos, comienzo, final, mg);
+        umbral = datos[posmg].mg;
+    }
+    if(elemento==14)
+    {
+        quicksort(datos, comienzo, final, al);
+        umbral = datos[posal].al;
+        
+    }
+    if(elemento==15){
+        quicksort(datos, comienzo, final, si);
+        umbral = datos[possi].si;
+        
+    }
+    if(elemento==16){
+        quicksort(datos, comienzo, final, k);
+        umbral = datos[posk].k;
+    }
+    if(elemento==17){
+        quicksort(datos, comienzo, final, ca);
+        umbral = datos[posca].ca;
+    }
+    if(elemento==18){
+        quicksort(datos, comienzo, final, va);
+        umbral = datos[posva].va;
+    }
+    if(elemento==19){
+        quicksort(datos, comienzo, final, fe);
+       umbral = datos[posfe].fe; 
+    }
+    
+    
+    
+    int solucion = casoBase(datos, comienzo, final);
+    if(solucion !=-1){
+        tipoElementoArbol tip;
+        tip.elemento="solucion";
+        tip.umbral=0;
+        tip.entropia=solucion;
+        arbol1 = construir(tip, NULL, NULL);
+    }
+    else{
+        tipoElementoArbol ti;
+        ti.elemento=elemento;
+        tip.umbral=
+        tip.entropia=menor;
+    }
+	return arbol1;
 }
 
 void quicksort(Datos cadena[], int izq, int der, float determinante[])
