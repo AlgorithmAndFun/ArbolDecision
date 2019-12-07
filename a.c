@@ -10,7 +10,9 @@
 #include <wchar.h>
 #include <math.h>
 #include <unistd.h>
+#include "arbolBin.h"
 #define clear() printf("\n")
+tipoArbolBin arbol1;
 
 
 typedef struct datos{
@@ -33,7 +35,9 @@ typedef struct datos{
 	int pos;
 }Tablaentropia;*/
 
+int clase(tipoArbolBin a, float ir, float na, float mg, float al, float si, float k, float ca, float va, float fe);
 void quicksort(Datos cadena[], int izq, int der, float determinante[]);
+tipoArbolBin creaArbol(Datos datos[],int comienzo,int final);
 
 void start_arbol_decision(){
 	clear();
@@ -88,20 +92,20 @@ double entropialateral(int tipo[],int inicio, int final){
      
     return entropia;
 }
-int entropia(int tipo[], int longitud)
-{
+void entropia(int tipo[],int comienzo, int longitud,int *posicion,double *entro)
+{   int numelem=longitud+1-comienzo;
 	double menor=1000;
-    int posmenor=0;
+    int posmenor=comienzo;
     double entropia = 0;
-	int i = 0; 
+	int i = comienzo; 
 	while (i < longitud)
 	{
 		if (tipo[i]!= tipo[i+1])
 		{
 		
-			double entrizq = entropialateral(tipo, 0, i);
+			double entrizq = entropialateral(tipo, comienzo, i);
 			double entrdech = entropialateral(tipo, i+1, longitud);
-            entropia =(((double)((double)i/(double)longitud)*entrizq) + (((double)((double)longitud-(double)i)/(double)longitud)*entrdech));
+            entropia =(((double)((double)(i-comienzo)/(double)numelem)*entrizq) + (((double)((double)(longitud)-(double)i)/(double)numelem)*entrdech));//voy por aqui
 			if(entropia<menor){
                 posmenor=i;
                 menor=entropia;
@@ -110,7 +114,8 @@ int entropia(int tipo[], int longitud)
 		}
 		i++;
 	}
-	return posmenor;
+	*posicion=posmenor;
+    *entro=menor;
 
 }
      
@@ -121,6 +126,7 @@ int main(void)
 	FILE *f;
 	char dats[400];
     int r;
+    float ir ,na, mg, al, si, k, ca, va, fe;
 	char aux[100];
 	f = fopen("problem_glass.csv", "r+");
 	fgets(aux, 100, f); //lee los valores que no van a servir de la primera fila
@@ -144,87 +150,349 @@ int main(void)
 		datos[j].tipo = atoi(frasefragmentada[9]);
 		j++;
 	}
-
+	fclose(f);
+    nuevoArbolBin(&arbol1);
+    arbol1=creaArbol(datos,0,j-1);
+    preorden(arbol1);
+    printf("Introduzca los valores de los elementos para identificar la clase\n");
+    printf("Introduzca en el siguiente orden: índice de refracción, sodio, magnesio, aluminio ");
+    printf("silicio, potasio, calcio, va, hierro y tipo\n");
+    scanf("%f %f %f %f %f %f %f %f %f", &ir, &na, &mg, &al, &si, &k, &ca, &va, &fe);
+    int solucion = clase(arbol1, ir, na, mg, al, si, k, ca, va, fe);
+    printf("El resultado es %d\n", solucion);
+	//llamo al arbol
+    return 0;
+}
+int casoBase(Datos datos[], int comienzo, int final){
+//     sleep(1);
+    double probabilidad = 0.8;
+    double total = final -comienzo +1; 
+    double tipos1 = 0,tipos2 = 0,tipos3 = 0,tipos4 = 0,tipos5 = 0,tipos6 = 0,tipos7 = 0;
+    for(int i = comienzo; i<final+1; i++){
+        if(datos[i].tipo==1){
+            tipos1++;
+        }
+        else if(datos[i].tipo==2){
+            tipos2++;
+        }
+        else if(datos[i].tipo==3){
+            tipos3++;
+        }
+        else if(datos[i].tipo==4){
+            tipos4++;
+        }
+        else if(datos[i].tipo==5){
+            tipos5++;
+        }
+        else if(datos[i].tipo==6){
+            tipos6++;
+        }
+        else if(datos[i].tipo==7){
+            tipos7++;
+        }
+    }
+    ///////////////////
+    if((tipos1/total)>probabilidad){
+        return 1;
+    }
+    else if((tipos2/total)>probabilidad){
+        return 2;
+    }
+    else if((tipos3/total)>probabilidad){
+        return 3;
+    }
+     else if((tipos4/total)>probabilidad){
+        return 4;
+    }
+     else if((tipos5/total)>probabilidad){
+        return 5;
+    }
+     else if((tipos6/total)>probabilidad){
+        return 6;
+    }
+     else if((tipos7/total)>probabilidad){
+        return 7;
+    }
+    else{
+        return -1;
+    }
+}
+tipoArbolBin creaArbol(Datos datos[],int comienzo,int final){
 	//int posicion2 = entropia(tipo,j-1);
 //     printf("posicion %d",posicion2);
-	float ir[j];
-	for (int i=0; i<j; i++)
-	{
-		ir[i] = datos[i].ir;
-	}	
-	quicksort(datos, 0, j-1, ir);
-    int tipo[j];
-	for (int i=0; i<j; i++)
-	{
-		tipo[i] = datos[i].tipo;
-	}
-    int posicion = entropia(tipo,j-1);
-     printf("posicion %d\n",posicion);
-	//ENTROPIA
-	/////////
-	float na[j];
-	for (int i=0; i<j; i++)
-	{
-		na[i] = datos[i].na;
-	}
-	quicksort(datos, 0, j-1, na);
-//     int posicion2 = entropia(&(datos)->tipo,j-1);
-//     printf("posicion %d",posicion2);
-	//ENTROPIA
-	/////
-	/*for (int i=0; i<j; i++)
-	{
-		printf("%f\n", datos[i].na);
-	}*/
-	float mg[j];
-	for(int i =0; i<j; i++){
-		mg[j]=datos[i].mg;
-	}
-	quicksort(datos,0, j-1, mg);
-	//ENTROPIA
-	/////////////////// 
-	float al[j];
-	for(int i =0; i<j; i++){
-		al[j] = datos[i].al;
-	}
-	quicksort(datos,0, j-1, al);
-	//ENTROPIA
-	///////////////////// 
-    float si[j];
-    for(int i=0; i<j; i++){
-		si[j]=datos[i].si;
-	}
-	quicksort(datos,0, j-1, si);
-	//ENTROPIA
-	/////////////////////
-	float k[j];
-	for(int i=0; i<j; i++){
-		k[j] = datos[i].k;
-	}
-	quicksort(datos,0, j-1, k);
-	//ENTROPIA
-	float ca[j];
-	for(int i =0; i<j; i++){
-		ca[j] = datos[i].ca;
-	}
-	quicksort(datos,0, j-1, ca);
-	//ENTROPIA
-	float va[j];
-	for(int i=0; i<j; i++){
-		va[j]= datos[i].va;
-	}
-	quicksort(datos,0, j-1, va);
-	//ENTROPIA
-	float fe[j];
-	for(int i=0; i<j; i++){
-		fe[j] = datos[i].fe;
-	}
-	quicksort(datos,0, j-1, fe);
-	//ENTROPIA
-	//Tablaentropia t = entropia(tipo, j-1);
-	fclose(f);
-	return 0;
+  if (comienzo != final){
+        int elemento = 0;
+        float umbral = 0;
+        float ir[final+1];
+        for (int i=comienzo; i<final+1; i++)
+        {
+            ir[i] = datos[i].ir;
+        }	
+        quicksort(datos, comienzo, final, ir);
+        int tipo[final+1];
+        for (int i=comienzo; i<final+1; i++)
+        {
+            tipo[i] = datos[i].tipo;
+        }
+        int posir=0;
+        double  entroir=0;
+        entropia(tipo,comienzo,final,&posir,&entroir);
+        //printf("posicion %d\n",posicion);
+        //ENTROPIA
+        /////////
+        float na[final+1];
+        for (int i=comienzo; i<final+1; i++)
+        {
+            na[i] = datos[i].na;
+        }
+        quicksort(datos, comienzo, final, na);
+        for (int i=comienzo; i<final+1; i++)
+        {
+            tipo[i] = datos[i].tipo;
+        }
+        int posna=0;
+        double entrona=0;
+        entropia(tipo,comienzo,final,&posna,&entrona);
+    //     int posicion2 = entropia(&(datos)->tipo,j-1);
+    //     printf("posicion %d",posicion2);
+        //ENTROPIA
+        /////
+        /*for (int i=0; i<j; i++)
+        {
+            printf("%f\n", datos[i].na);
+        }*/
+        float mg[final+1];
+        for(int i =comienzo; i<final+1; i++){
+            mg[i]=datos[i].mg;
+        }
+        quicksort(datos,comienzo, final, mg);
+        for (int i=comienzo; i<final+1; i++)
+        {
+            tipo[i] = datos[i].tipo;
+        }
+        int posmg=0;
+        double entromg=0;
+        entropia(tipo,comienzo,final,&posmg,&entromg);
+        //ENTROPIA
+        /////////////////// 
+        float al[final+1];
+        for(int i =comienzo; i<final+1; i++){
+            al[i] = datos[i].al;
+        }
+        quicksort(datos,comienzo, final, al);
+        for (int i=comienzo; i<final+1; i++)
+        {
+            tipo[i] = datos[i].tipo;
+        }
+        int posal=0;
+        double entroal=0;
+        entropia(tipo,comienzo,final,&posal,&entroal);
+        //ENTROPIA
+        ///////////////////// 
+        float si[final+1];
+        for(int i=comienzo; i<final+1; i++){
+            si[i]=datos[i].si;
+        }
+        quicksort(datos,comienzo, final, si);
+        for (int i=comienzo; i<final+1; i++)
+        {
+            tipo[i] = datos[i].tipo;
+        }
+        int possi=0;
+        double entrosi=0;
+        entropia(tipo,comienzo,final,&possi,&entrosi);
+        //ENTROPIA
+        /////////////////////
+        float k[final+1];
+        for(int i=comienzo; i<final+1; i++){
+            k[i] = datos[i].k;
+        }
+        quicksort(datos,comienzo, final, k);
+        for (int i=comienzo; i<final+1; i++)
+        {
+            tipo[i] = datos[i].tipo;
+        }
+        int posk=0;
+        double entrok=0;
+        entropia(tipo,comienzo,final,&posk,&entrok);
+        //ENTROPIA
+        float ca[final+1];
+        for(int i =comienzo; i<final+1; i++){
+            ca[i] = datos[i].ca;
+        }
+        quicksort(datos,comienzo, final, ca);
+        for (int i=comienzo; i<final+1; i++)
+        {
+            tipo[i] = datos[i].tipo;
+        }
+        int posca=0;
+        double entroca=0;
+        entropia(tipo,comienzo,final,&posca,&entroca);
+        //ENTROPIA
+        float va[final+1];
+        for(int i=comienzo; i<final+1; i++){
+            va[i]= datos[i].va;
+        }
+        quicksort(datos,comienzo, final, va);
+        for (int i=comienzo; i<final+1; i++)
+        {
+            tipo[i] = datos[i].tipo;
+        }
+        int posva=0;
+        double entrova=0;
+        entropia(tipo,comienzo,final,&posva,&entrova);
+        //ENTROPIA
+        float fe[final+1];
+        for(int i=comienzo; i<final+1; i++){
+            fe[i] = datos[i].fe;
+        }
+        quicksort(datos,comienzo, final, fe);
+        for (int i=comienzo; i<final+1; i++)
+        {
+            tipo[i] = datos[i].tipo;
+        }
+        int posfe=0;
+        double entrofe=0;
+        entropia(tipo,comienzo,final,&posfe,&entrofe);
+        //ENTROPIA
+        //Tablaentropia t = entropia(tipo, j-1);
+        double menor = 1000;
+        if (entroir < menor){
+            elemento=11;
+            menor = entroir;
+        }
+        if (entrona < menor){
+            elemento=12;
+            menor = entrona;
+        }
+        if (entromg < menor){
+            elemento=13;
+            menor = entromg;
+        }
+        if (entroal < menor){
+            elemento=14;
+            menor = entroal;
+        }
+        if (entrosi < menor){
+            elemento=15;
+            menor = entrosi;
+        }
+        if (entrok < menor){
+            elemento=16;
+            menor = entrok;
+        }
+        if (entroca < menor){
+            elemento=17;
+            menor = entroca;
+        }
+        if (entrova < menor){
+            elemento=18;
+            menor = entrova;
+        }
+        if (entrofe < menor){
+            elemento=19;
+            menor = entrofe;
+        }
+        if (entroir < menor){
+            elemento = 11;
+            menor = entroir;
+        }
+        //printf("Antes de posicion\n");
+        int posicion = 0;
+        if(elemento==11){
+//             printf("11\n");
+            quicksort(datos, comienzo, final, ir);
+            umbral = datos[posir].ir;
+            posicion = posir;
+        }
+        else if(elemento==12){
+//             printf("12\n");
+            quicksort(datos, comienzo, final, na);
+            umbral = datos[posna].na;
+            posicion = posna;
+        }
+        else if(elemento==13){
+//             printf("13\n");
+            quicksort(datos, comienzo, final, mg);
+            umbral = datos[posmg].mg;
+            posicion = posmg;
+        }
+        else if(elemento==14)
+        {
+//             printf("14\n");
+            quicksort(datos, comienzo, final, al);
+            umbral = datos[posal].al;
+            posicion = posal;
+        }
+        else if(elemento==15){
+//             printf("15\n");
+            quicksort(datos, comienzo, final, si);
+            umbral = datos[possi].si;
+            posicion = possi;
+            
+        }
+        else if(elemento==16){
+//             printf("16\n");
+            quicksort(datos, comienzo, final, k);
+            umbral = datos[posk].k;
+            posicion =posk;
+        }
+        else if(elemento==17){
+//             printf("17\n");
+            quicksort(datos, comienzo, final, ca);
+//             printf("paso\n");
+//             printf("posmenor ca: %d\n", posca);
+            umbral = datos[posca].ca;
+//             printf("umbral: %f\n", umbral);
+            posicion = posca;
+        }
+        else if(elemento==18){
+//             printf("18\n");
+            quicksort(datos, comienzo, final, va);
+            umbral = datos[posva].va;
+            posicion = posva;
+        }
+        else if(elemento==19){
+//             printf("19\n");
+            quicksort(datos, comienzo, final, fe);
+        umbral = datos[posfe].fe; 
+        posicion = posfe;
+        }
+        
+//         printf("Antes\n");
+        
+        int solucion = casoBase(datos, comienzo, final);
+//         printf("Solucion\n");
+        if(solucion !=-1){
+//             printf("Entro caso base\n");
+            tipoElementoArbolBin tip;
+            tip.elemento=elemento;
+            tip.umbral=0;
+            tip.entropia=solucion;
+            arbol1 = construir(tip, NULL, NULL);
+        }
+        else{
+//             printf("Entro otro caso\n");
+            tipoElementoArbolBin ti;
+            ti.elemento=elemento;
+            ti.umbral=umbral;
+            ti.entropia=menor;
+//             printf("POSICION %d\n",posicion);
+            arbol1 = construir(ti, creaArbol(datos,comienzo,posicion),creaArbol(datos,posicion+1,final));
+        }
+  }
+    
+    else{
+        tipoElementoArbolBin ti1;
+        ti1.elemento=0;
+        ti1.umbral=0;
+        ti1.entropia=datos[comienzo].tipo;
+        arbol1 = construir(ti1, NULL, NULL);
+    }
+    return arbol1;
 }
+	
+
 
 void quicksort(Datos cadena[], int izq, int der, float determinante[])
 {
@@ -261,3 +529,85 @@ void quicksort(Datos cadena[], int izq, int der, float determinante[])
     quicksort(cadena, i, der, determinante);
   }
 }
+
+int clase(tipoArbolBin a, float ir, float na, float mg, float al, float si, float k, float ca, float va, float fe)
+{
+    int tipo = 0;
+    if (a->elem.elemento == 0)
+    {
+        return (int)a->elem.entropia;
+    }
+    else if (a->elem.elemento != 0)
+    {
+        if (a->elem.elemento == 11)
+        {
+            if (a->elem.umbral > ir)
+                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
+            else
+                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+        }
+        if (a->elem.elemento == 12)
+        {
+            if (a->elem.umbral > na)
+                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
+            else
+                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+        }
+        if (a->elem.elemento == 13)
+        {
+            if (a->elem.umbral > mg)
+                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
+            else
+                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+        }
+        if (a->elem.elemento == 14)
+        {
+            if (a->elem.umbral > al)
+                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
+            else
+                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+        }
+        
+        if (a->elem.elemento == 15)
+        {
+            if (a->elem.umbral > si)
+                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
+            else
+                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+        }
+        
+        if (a->elem.elemento == 16)
+        {
+            if (a->elem.umbral > k)
+                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
+            else
+                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+        }
+        
+        if (a->elem.elemento == 17)
+        {
+            if (a->elem.umbral > ca)
+                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
+            else
+                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+        }
+        
+        if (a->elem.elemento == 18)
+        {
+            if (a->elem.umbral > va)
+                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
+            else
+                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+        }
+        
+        if (a->elem.elemento == 19)
+        {
+            if (a->elem.umbral > fe)
+                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
+            else
+                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+        }
+    }
+    return tipo;
+}
+
