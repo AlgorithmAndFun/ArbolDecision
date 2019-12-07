@@ -125,8 +125,7 @@ int main(void)
 	start_arbol_decision();
 	FILE *f;
 	char dats[400];
-    int r;
-    float ir ,na, mg, al, si, k, ca, va, fe;
+    float ir=0 ,na=0, mg=0, al=0, si=0, k=0, ca=0, va=0, fe=0;
 	char aux[100];
 	f = fopen("problem_glass.csv", "r+");
 	fgets(aux, 100, f); //lee los valores que no van a servir de la primera fila
@@ -153,8 +152,8 @@ int main(void)
 	fclose(f);
     nuevoArbolBin(&arbol1);
     arbol1=creaArbol(datos,0,j-1);
-    preorden(arbol1);
-    printf("Introduzca los valores de los elementos para identificar la clase\n");
+    //preorden(arbol1);
+   // printf("Introduzca los valores de los elementos para identificar la clase\n");
     printf("Introduzca en el siguiente orden: índice de refracción, sodio, magnesio, aluminio ");
     printf("silicio, potasio, calcio, va, hierro y tipo\n");
     scanf("%f %f %f %f %f %f %f %f %f", &ir, &na, &mg, &al, &si, &k, &ca, &va, &fe);
@@ -192,25 +191,25 @@ int casoBase(Datos datos[], int comienzo, int final){
         }
     }
     ///////////////////
-    if((tipos1/total)>probabilidad){
+    if((tipos1/total)>=probabilidad){
         return 1;
     }
-    else if((tipos2/total)>probabilidad){
+    else if((tipos2/total)>=probabilidad){
         return 2;
     }
-    else if((tipos3/total)>probabilidad){
+    else if((tipos3/total)>=probabilidad){
         return 3;
     }
-     else if((tipos4/total)>probabilidad){
+     else if((tipos4/total)>=probabilidad){
         return 4;
     }
-     else if((tipos5/total)>probabilidad){
+     else if((tipos5/total)>=probabilidad){
         return 5;
     }
-     else if((tipos6/total)>probabilidad){
+     else if((tipos6/total)>=probabilidad){
         return 6;
     }
-     else if((tipos7/total)>probabilidad){
+     else if((tipos7/total)>=probabilidad){
         return 7;
     }
     else{
@@ -220,7 +219,7 @@ int casoBase(Datos datos[], int comienzo, int final){
 tipoArbolBin creaArbol(Datos datos[],int comienzo,int final){
 	//int posicion2 = entropia(tipo,j-1);
 //     printf("posicion %d",posicion2);
-  if (comienzo != final){
+//   if (comienzo != final){
         int elemento = 0;
         float umbral = 0;
         float ir[final+1];
@@ -402,39 +401,39 @@ tipoArbolBin creaArbol(Datos datos[],int comienzo,int final){
         if(elemento==11){
 //             printf("11\n");
             quicksort(datos, comienzo, final, ir);
-            umbral = datos[posir].ir;
+            umbral = (datos[posir].ir+datos[posir+1].ir)/2;
             posicion = posir;
         }
         else if(elemento==12){
 //             printf("12\n");
             quicksort(datos, comienzo, final, na);
-            umbral = datos[posna].na;
+            umbral = (datos[posna].na+datos[posna+1].na)/2;
             posicion = posna;
         }
         else if(elemento==13){
 //             printf("13\n");
             quicksort(datos, comienzo, final, mg);
-            umbral = datos[posmg].mg;
+            umbral = (datos[posmg].mg+datos[posmg+1].mg)/2;
             posicion = posmg;
         }
         else if(elemento==14)
         {
 //             printf("14\n");
             quicksort(datos, comienzo, final, al);
-            umbral = datos[posal].al;
+            umbral = (datos[posal].al+datos[posal+1].al)/2 ;
             posicion = posal;
         }
         else if(elemento==15){
 //             printf("15\n");
             quicksort(datos, comienzo, final, si);
-            umbral = datos[possi].si;
+            umbral = (datos[possi].si+datos[possi+1].si)/2;
             posicion = possi;
             
         }
         else if(elemento==16){
 //             printf("16\n");
             quicksort(datos, comienzo, final, k);
-            umbral = datos[posk].k;
+            umbral = (datos[posk].k+datos[posk].k)/2;
             posicion =posk;
         }
         else if(elemento==17){
@@ -442,20 +441,20 @@ tipoArbolBin creaArbol(Datos datos[],int comienzo,int final){
             quicksort(datos, comienzo, final, ca);
 //             printf("paso\n");
 //             printf("posmenor ca: %d\n", posca);
-            umbral = datos[posca].ca;
+            umbral = (datos[posca].ca+datos[posca+1].ca)/2;
 //             printf("umbral: %f\n", umbral);
             posicion = posca;
         }
         else if(elemento==18){
 //             printf("18\n");
             quicksort(datos, comienzo, final, va);
-            umbral = datos[posva].va;
+            umbral = (datos[posva].va+datos[posva+1].va)/2;
             posicion = posva;
         }
         else if(elemento==19){
 //             printf("19\n");
             quicksort(datos, comienzo, final, fe);
-        umbral = datos[posfe].fe; 
+        umbral = (datos[posfe].fe+datos[posfe+1].fe)/2; 
         posicion = posfe;
         }
         
@@ -480,15 +479,15 @@ tipoArbolBin creaArbol(Datos datos[],int comienzo,int final){
 //             printf("POSICION %d\n",posicion);
             arbol1 = construir(ti, creaArbol(datos,comienzo,posicion),creaArbol(datos,posicion+1,final));
         }
-  }
-    
-    else{
-        tipoElementoArbolBin ti1;
-        ti1.elemento=0;
-        ti1.umbral=0;
-        ti1.entropia=datos[comienzo].tipo;
-        arbol1 = construir(ti1, NULL, NULL);
-    }
+//   }
+//     
+//     else{
+//         tipoElementoArbolBin ti1;
+//         ti1.elemento=0;
+//         ti1.umbral=0;
+//         ti1.entropia=datos[comienzo].tipo;
+//         arbol1 = construir(ti1, NULL, NULL);
+//     }
     return arbol1;
 }
 	
@@ -530,84 +529,167 @@ void quicksort(Datos cadena[], int izq, int der, float determinante[])
   }
 }
 
+// int clase(tipoArbolBin a, float ir, float na, float mg, float al, float si, float k, float ca, float va, float fe)
+// {
+//     int tipo = 0;
+//     if (a->elem.elemento == 0)
+//     {
+//         return (int)a->elem.entropia;
+//     }
+//     else if (a->elem.elemento != 0)
+//     {
+//         if (a->elem.elemento == 11)
+//         {
+//             if (a->elem.umbral > ir)
+//                 tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
+//             else
+//                 tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+//         }
+//         if (a->elem.elemento == 12)
+//         {
+//             if (a->elem.umbral > na)
+//                 tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
+//             else
+//                 tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+//         }
+//         if (a->elem.elemento == 13)
+//         {
+//             if (a->elem.umbral > mg)
+//                 tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
+//             else
+//                 tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+//         }
+//         if (a->elem.elemento == 14)
+//         {
+//             if (a->elem.umbral > al)
+//                 tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
+//             else
+//                 tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+//         }
+//         
+//         if (a->elem.elemento == 15)
+//         {
+//             if (a->elem.umbral > si)
+//                 a = a->izda;
+//             else
+//                 tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+//         }
+//         
+//         if (a->elem.elemento == 16)
+//         {
+//             if (a->elem.umbral > k)
+//                 tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
+//             else
+//                 tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+//         }
+//         
+//         if (a->elem.elemento == 17)
+//         {
+//             if (a->elem.umbral > ca)
+//                 tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
+//             else
+//                 tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+//         }
+//         
+//         if (a->elem.elemento == 18)
+//         {
+//             if (a->elem.umbral > va)
+//                 tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
+//             else
+//                 tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+//         }
+//         
+//         if (a->elem.elemento == 19)
+//         {
+//             if (a->elem.umbral > fe)
+//                 tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
+//             else
+//                 tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
+//         }
+//     }
+//     return tipo;
+// }
 int clase(tipoArbolBin a, float ir, float na, float mg, float al, float si, float k, float ca, float va, float fe)
 {
-    int tipo = 0;
-    if (a->elem.elemento == 0)
-    {
-        return (int)a->elem.entropia;
+    while(a->dcha !=NULL && a->izda != NULL){
+        
+        if (a->elem.elemento == 0)
+        {
+            return (int)a->elem.entropia;
+        }
+        else if (a->elem.elemento != 0)
+        {
+            if (a->elem.elemento == 11)
+            {
+                if (a->elem.umbral > ir)
+                    a = a->izda;
+                else
+                    a = a->dcha;
+            }
+            if (a->elem.elemento == 12)
+            {
+                if (a->elem.umbral > na)
+                   a = a->izda;
+                else
+                    a = a->dcha;
+            }
+            if (a->elem.elemento == 13)
+            {
+                if (a->elem.umbral > mg)
+                    a = a->izda;
+                else
+                    a = a->dcha;
+            }
+            if (a->elem.elemento == 14)
+            {
+                if (a->elem.umbral > al)
+                    a = a->izda;
+                else
+                    a = a->dcha;
+            }
+            
+            if (a->elem.elemento == 15)
+            {
+                if (a->elem.umbral > si)
+                    a = a->izda;
+                else
+                    a = a->dcha;
+            }
+            
+            if (a->elem.elemento == 16)
+            {
+                if (a->elem.umbral > k)
+                    a = a->izda;
+                else
+                    a = a->dcha;
+            }
+            
+            if (a->elem.elemento == 17)
+            {
+                if (a->elem.umbral > ca)
+                    a = a->izda;
+                else
+                    a = a->dcha;
+            }
+            
+            if (a->elem.elemento == 18)
+            {
+                if (a->elem.umbral > va)
+                    a = a->izda;
+                else
+                    a = a->dcha;
+            }
+            
+            if (a->elem.elemento == 19)
+            {
+                if (a->elem.umbral > fe)
+                    a = a->izda;
+                else
+                    a = a->dcha;
+            }
+        }
     }
-    else if (a->elem.elemento != 0)
-    {
-        if (a->elem.elemento == 11)
-        {
-            if (a->elem.umbral > ir)
-                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
-            else
-                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
-        }
-        if (a->elem.elemento == 12)
-        {
-            if (a->elem.umbral > na)
-                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
-            else
-                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
-        }
-        if (a->elem.elemento == 13)
-        {
-            if (a->elem.umbral > mg)
-                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
-            else
-                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
-        }
-        if (a->elem.elemento == 14)
-        {
-            if (a->elem.umbral > al)
-                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
-            else
-                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
-        }
-        
-        if (a->elem.elemento == 15)
-        {
-            if (a->elem.umbral > si)
-                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
-            else
-                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
-        }
-        
-        if (a->elem.elemento == 16)
-        {
-            if (a->elem.umbral > k)
-                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
-            else
-                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
-        }
-        
-        if (a->elem.elemento == 17)
-        {
-            if (a->elem.umbral > ca)
-                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
-            else
-                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
-        }
-        
-        if (a->elem.elemento == 18)
-        {
-            if (a->elem.umbral > va)
-                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
-            else
-                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
-        }
-        
-        if (a->elem.elemento == 19)
-        {
-            if (a->elem.umbral > fe)
-                tipo = clase(a->izda, ir, na, mg, al, si, k, ca, va, fe);
-            else
-                tipo = clase(a->dcha, ir, na, mg, al, si, k, ca, va, fe);
-        }
-    }
-    return tipo;
+    
+    return (int)a->elem.entropia;
 }
 
